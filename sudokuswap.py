@@ -64,15 +64,34 @@ class board:
         return ans
 
     def check_clique(self, clique): #takes a row, column, or group and checks if there are doubles
-        c = dict()
-        for position in clique:
+        c = dict ()
+        for position in clique: #creates a dictionary of only the positions in the given clique
             c[position] = self.data[position]
-        click = (c.keys()).sort ()
-        nums = [1,2,3,4,5,6,7,8,9]
-        for i in range (len (nums)):
-            if nums[i] != c[i]:
-                return click.getkey (nums[i]) #returns the position where there is a double
-        return -1 #returns -1 when there are no doubles
+        nums = set (c.values())
+        if (len (nums) != 9):
+            # duplicates = c.values()
+            # for i in range (9):
+            #     if vals.count (i) <= 1:
+            #         duplicates.remove (i)
+            # return duplicates
+            duplicates = [] #stores the places where there is a duplicate
+            vals = list (c.values ())
+            for position in c.keys():
+                n = c[position]
+                if vals.count (n) > 1:
+                    duplicates.append (position)
+            return duplicates
+        else:
+            return -1
+        # c = dict()
+        # for position in clique:
+        #     c[position] = self.data[position]
+        # click = (c.keys()).sort ()
+        # nums = [1,2,3,4,5,6,7,8,9]
+        # for i in range (len (nums)):
+        #     if nums[i] != c[i]:
+        #         return click.getkey (nums[i]) #returns the position where there is a double
+        # return -1 #returns -1 when there are no doubles
 
     def check_board (self):
         for clique in self.cliques:
@@ -93,4 +112,4 @@ class board:
 
 
 a = board ("tester.txt")
-print (a.check_board ())
+print (a.check_clique (a.cliques[12]))
