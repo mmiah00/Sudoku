@@ -36,35 +36,11 @@ class board:
 
     def __init__ (self, file):
         bored = parser (file)
-        setup (bored)
-        self.boxes = bored
+        self.boxes = setup (bored)
         # b = file.split ("\n")
         # bored = []
         # for i in range (len (b)):
         #     bored.append (b[i].split (","))
-
-    def setup (board): #takes parsed board and makes and array of boxes holding the id and the data
-        id = 0
-        ans = []
-        for r in board:
-            for c in r:
-                num = int (c)
-                new_box = box (num, id)
-                ans.append (new_box)
-                id += 1
-        return ans
-
-    def initialize (self):
-        id = 0
-        for i in range (9):
-            for j in range (9):
-                bored[i][j] = box(0, id)
-                id += 1
-
-    def make_rows(self):
-        row = []
-        for i in range (len (self.b)):
-            row.append (clique (self.b[i]))
 
     def parser (file): #returns an array parsed with all the values in the board
         fi = open (file, "r")
@@ -78,5 +54,24 @@ class board:
             ans.remove ([''])
         return ans
 
+    def setup (board): #takes parsed board and makes and array of boxes holding the id and the data
+        id = 0
+        ans = []
+        for r in board:
+            for c in r:
+                num = int (c)
+                new_box = box (num, id)
+                ans.append (new_box)
+                id += 1
+        return ans
+
+    def check (clique):
+        clique.sort ()
+        nums = [1,2,3,4,5,6,7,8,9]
+        for i in range (len (nums)):
+            if nums[i] != clique[i]:
+                return False
+        return True
+        
 a = parser ("tester.txt")
 print (a)
