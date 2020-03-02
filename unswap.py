@@ -172,14 +172,12 @@ board1 = board (boards[0])
 board2 = board (boards[1])
 
 a = board1.unswap (output)
-print ("a = " + a)
 
 b = board2.unswap (output)
-print ("b = " + b)
 
-#o.write(a + b)
+o.write(a + b)
 
-#o.close ()
+o.close ()
 
 
 
