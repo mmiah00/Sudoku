@@ -1,3 +1,4 @@
+#! /usr/bin/python
 import sys
 
 class box: #one square on a board
@@ -36,21 +37,12 @@ class board:
     [57,58,59,66,67,68,75,76,77],
     [60,61,62,69,70,71,78,79,80]]
 
-    def __init__ (self, file):
-        bored = self.parser (file)
-        self.boxes = self.setup (bored)
-
-    def parser (self,file): #returns an array parsed with all the values in the board
-        fi = open (file, "r")
-        ans = []
-        for line in fi:
-            f = line.split ("\n")
-            for clique in f:
-                a = clique.split (",")
-                ans.append (a)
-        while [''] in ans:
-            ans.remove ([''])
-        return ans
+    def __init__ (self, parsed_file):
+        # bored1 = self.parser (file)[0]
+        # bored2 = self.parser (file)[1]
+        # self.boxes1 = self.setup (bored1)
+        # self.boxes2 = self.setup (bored2)
+        self.boxes = self.setup (parsed_file)
 
     def setup (self,bored): #takes parsed board and makes and array of boxes holding the id and the data
         id = 0
@@ -87,10 +79,6 @@ class board:
             if self.check_clique (self.cliques[i]) != -1:
                 ans = False
         return ans
-        # for clique in self.cliques:
-        #     if self.check_clique (clique) != -1:
-        #         return False
-        # return True
 
     def swap (self, id1, id2): #takes the id of the spots you want to swap and swaps the values
         one = self.data[id1]
@@ -103,14 +91,14 @@ class board:
             return ("" + str(id2) + "," + str(id1) + "\n")
 
     def unswap (self, outfile):
-        self.check_board ()
+        self.check_board () #sets up multiple to find the duplicates
         i = 0
         while (not self.check_board () and i < len (self.multiple)):
             r = i + 1
             for r in range (len (self.multiple) - 1):
                 a = self.swap (self.multiple[i][0], self.multiple[r][0])
                 if self.check_board ():
-                    o = open (outfile, "w")
+                    o = open (outfile, "a")
                     o.write (a)
                     break
                 else:
@@ -118,7 +106,7 @@ class board:
 
                 b = self.swap (self.multiple[i][1], self.multiple[r][0])
                 if self.check_board ():
-                    o = open (outfile, "w")
+                    o = open (outfile, "a")
                     o.write (b)
                     break
                 else:
@@ -126,7 +114,7 @@ class board:
 
                 c = self.swap (self.multiple[i][1], self.multiple[r][1])
                 if self.check_board ():
-                    o = open (outfile, "w")
+                    o = open (outfile, "a")
                     o.write (c)
                     break
                 else:
@@ -134,36 +122,55 @@ class board:
 
                 d = self.swap (self.multiple[i][0], self.multiple[r][1])
                 if self.check_board ():
-                    o = open (outfile, "w")
+                    o = open (outfile, "a")
                     o.write (d)
+                    o.close ()
                     break
                 else:
                     self.swap (self.multiple[i][0], self.multiple[r][1])
 
 
-        # if not self.check_board ():
-        #     s = self.swap (p1, p2)
-        #     if self.check_board ():
-        #         o = open (outfile, "w")
-        #         o.write (s)
-        #     else:
-        #         unswap ()
+def parser (file): #returns an array parsed with all the values in the board
+    fi = open (file, "r")
+    ans1 = []
+    ans2 = []
+    i = 1
+    for line in fi:
+        f = line.split ("\n")
+        for clique in f:
+            a = clique.split (",")
+            try:
+                test = int (a[0])
+                if (i <= 9):
+                    ans1.append (a)
+                    i +=1
+                else:
+                    ans2.append (a)
+            except:
+                pass
+    while [''] in ans1 and ans2:
+        ans1.remove ([''])
+        ans2.remove ([''])
+    fi.close ()
+    return [ans1, ans2]
+
+input = sys.argv[1]
+output = sys.argv[2]
+boards = parser (input)
+
+board1 = board (boards[0])
+board2 = board (boards[1])
+
+board1.unswap (output)
+board2.unswap (output)
 
 
-        # if i + 1 > len (self.multiple):
-        #     self.check_board ()
-        #     self.unswap (outfile, i)
-        # else:
-        #     p1 = self.multiple [i][0]
-        #     p2 = self.multiple [i][1]
-        #     s = self.swap (p1, p2)
-        #     if not self.check_board():
-        #         #self.swap (p1, p2)
-        #         self.unswap (outfile, i + 1)
-        #     else:
-        #         o = open (outfile, "w")
-        #         outfile.write (s)
+# out_file = open (sys.argv[2], "w")
+# o1 = open ("out1.txt", "r")
+# o2 = open ("out2.txt", "r")
+# out_file.write (o1 + o2)
 
 
-a = board ("tester.txt")
-a.unswap ("out.txt")
+# a = board (sys.argv[1])
+# print (len (a.parser (sys.argv[1])))
+#a.unswap (sys.argv [2])
