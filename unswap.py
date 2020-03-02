@@ -102,21 +102,68 @@ class board:
         else:
             return ("" + str(another) + "," + str(one) + "\n")
 
-    def unswap (self, outfile, i):
-        if i + 1 >= len (self.multiple):
-            self.check_board ()
-            self.unswap (outfile, i)
-        else:
-            p1 = self.multiple [i][0]
-            p2 = self.multiple [i][1]
-            s = self.swap (p1, p2)
-            if not self.check_board():
-                self.swap (p1, p2)
-                self.unswap (outfile, i + 1)
-            else:
-                o = open (outfile, "w")
-                outfile.write (s)
+    def unswap (self, outfile):
+        self.check_board ()
+        i = 0
+        while (not self.check_board () and i < len (self.multiple)):
+            r = i + 1
+            for r in range (len (self.multiple) - 1):
+                a = self.swap (self.multiple[i][0], self.multiple[r][0])
+                if self.check_board ():
+                    o = open (outfile, "w")
+                    o.write (a)
+                    break
+                else:
+                    self.swap (self.multiple[i][0], self.multiple[r][0])
+
+                b = self.swap (self.multiple[i][1], self.multiple[r][0])
+                if self.check_board ():
+                    o = open (outfile, "w")
+                    o.write (b)
+                    break
+                else:
+                    self.swap (self.multiple[i][1], self.multiple[r][0])
+
+                c = self.swap (self.multiple[i][1], self.multiple[r][1])
+                if self.check_board ():
+                    o = open (outfile, "w")
+                    o.write (c)
+                    break
+                else:
+                    self.swap (self.multiple[i][1], self.multiple[r][1])
+
+                d = self.swap (self.multiple[i][0], self.multiple[r][1])
+                if self.check_board ():
+                    o = open (outfile, "w")
+                    o.write (d)
+                    break
+                else:
+                    self.swap (self.multiple[i][0], self.multiple[r][1])
 
 
-a = board ("tester.txt")
-a.unswap ("out.txt", 0)
+        # if not self.check_board ():
+        #     s = self.swap (p1, p2)
+        #     if self.check_board ():
+        #         o = open (outfile, "w")
+        #         o.write (s)
+        #     else:
+        #         unswap ()
+
+
+        # if i + 1 > len (self.multiple):
+        #     self.check_board ()
+        #     self.unswap (outfile, i)
+        # else:
+        #     p1 = self.multiple [i][0]
+        #     p2 = self.multiple [i][1]
+        #     s = self.swap (p1, p2)
+        #     if not self.check_board():
+        #         #self.swap (p1, p2)
+        #         self.unswap (outfile, i + 1)
+        #     else:
+        #         o = open (outfile, "w")
+        #         outfile.write (s)
+
+
+a = board ("tester2.txt")
+a.unswap ("out.txt")
