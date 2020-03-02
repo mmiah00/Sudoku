@@ -9,6 +9,7 @@ class box: #one square on a board
 class board:
     data = dict ()
     multiple = [] #stores all the positions that have duplicates
+
     cliques=[[0,1,2,3,4,5,6,7,8],
     [9,10,11,12,13,14,15,16,17],
     [18,19,20,21,22,23,24,25,26],
@@ -98,36 +99,44 @@ class board:
             for r in range (len (self.multiple) - 1):
                 a = self.swap (self.multiple[i][0], self.multiple[r][0])
                 if self.check_board ():
-                    o = open (outfile, "a")
-                    o.write (a)
-                    break
+                    # o = open (outfile, "a")
+                    # o.write (a)
+                    # o.close ()
+                    # break
+                    return a
                 else:
                     self.swap (self.multiple[i][0], self.multiple[r][0])
 
                 b = self.swap (self.multiple[i][1], self.multiple[r][0])
                 if self.check_board ():
-                    o = open (outfile, "a")
-                    o.write (b)
-                    break
+                    # o = open (outfile, "a")
+                    # o.write (b)
+                    # o.close ()
+                    # break
+                    return b
                 else:
                     self.swap (self.multiple[i][1], self.multiple[r][0])
 
                 c = self.swap (self.multiple[i][1], self.multiple[r][1])
                 if self.check_board ():
-                    o = open (outfile, "a")
-                    o.write (c)
-                    break
+                    # o = open (outfile, "a")
+                    # o.write (c)
+                    # o.close ()
+                    # break
+                    return c
                 else:
                     self.swap (self.multiple[i][1], self.multiple[r][1])
 
                 d = self.swap (self.multiple[i][0], self.multiple[r][1])
                 if self.check_board ():
-                    o = open (outfile, "a")
-                    o.write (d)
-                    o.close ()
-                    break
+                    # o = open (outfile, "a")
+                    # o.write (d)
+                    # o.close ()
+                    # break
+                    return d
                 else:
                     self.swap (self.multiple[i][0], self.multiple[r][1])
+        return ""
 
 
 def parser (file): #returns an array parsed with all the values in the board
@@ -156,13 +165,28 @@ def parser (file): #returns an array parsed with all the values in the board
 
 input = sys.argv[1]
 output = sys.argv[2]
+o = open (output, "w")
 boards = parser (input)
 
 board1 = board (boards[0])
 board2 = board (boards[1])
 
-board1.unswap (output)
-board2.unswap (output)
+a = board1.unswap (output)
+print ("a = " + a)
+
+b = board2.unswap (output)
+print ("b = " + b)
+
+#o.write(a + b)
+
+#o.close ()
+
+
+
+
+
+
+
 
 
 # out_file = open (sys.argv[2], "w")
