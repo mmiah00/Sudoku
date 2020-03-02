@@ -97,10 +97,10 @@ class board:
         another = self.data[id2]
         self.data[id1] = another
         self.data[id2] = one
-        if one < another:
-            return ("" + str (one) + "," + str(another) + "\n")
+        if id1 < id2:
+            return ("" + str (id1) + "," + str(id2) + "\n")
         else:
-            return ("" + str(another) + "," + str(one) + "\n")
+            return ("" + str(id2) + "," + str(id1) + "\n")
 
     def unswap (self, outfile):
         self.check_board ()
@@ -165,5 +165,5 @@ class board:
         #         outfile.write (s)
 
 
-a = board ("tester2.txt")
+a = board ("tester.txt")
 a.unswap ("out.txt")
