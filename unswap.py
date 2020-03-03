@@ -101,44 +101,39 @@ class board:
             for r in range (len (self.dups) - 1):
                 a = self.swap (self.dups[i][0], self.dups[r][0])
                 if self.check_board ():
-                    # o = open (outfile, "a")
-                    # o.write (a)
-                    # o.close ()
-                    # break
-                    return a
+                    o = open (outfile, "a")
+                    o.write (a)
+                    o.close ()
+                    break
                 else:
                     self.swap (self.dups[i][0], self.dups[r][0])
 
                 b = self.swap (self.dups[i][1], self.dups[r][0])
                 if self.check_board ():
-                    # o = open (outfile, "a")
-                    # o.write (b)
-                    # o.close ()
-                    # break
-                    return b
+                    o = open (outfile, "a")
+                    o.write (b)
+                    o.close ()
+                    break
                 else:
                     self.swap (self.dups[i][1], self.dups[r][0])
 
                 c = self.swap (self.dups[i][1], self.dups[r][1])
                 if self.check_board ():
-                    # o = open (outfile, "a")
-                    # o.write (c)
-                    # o.close ()
-                    # break
-                    return c
+                    o = open (outfile, "a")
+                    o.write (c)
+                    o.close ()
+                    break
                 else:
                     self.swap (self.dups[i][1], self.dups[r][1])
 
                 d = self.swap (self.dups[i][0], self.dups[r][1])
                 if self.check_board ():
-                    # o = open (outfile, "a")
-                    # o.write (d)
-                    # o.close ()
-                    # break
-                    return d
+                    o = open (outfile, "a")
+                    o.write (d)
+                    o.close ()
+                    break
                 else:
                     self.swap (self.dups[i][0], self.dups[r][1])
-        return ""
 
 
 def parser (file): #returns an array parsed with all the values in the board
@@ -167,34 +162,11 @@ def parser (file): #returns an array parsed with all the values in the board
 
 input = sys.argv[1]
 output = sys.argv[2]
-o = open (output, "w")
+
 boards = parser (input)
 
 board1 = board (boards[0])
 board2 = board (boards[1])
 
 a = board1.unswap (output)
-
 b = board2.unswap (output)
-
-o.write(a + b)
-
-o.close ()
-
-
-
-
-
-
-
-
-
-# out_file = open (sys.argv[2], "w")
-# o1 = open ("out1.txt", "r")
-# o2 = open ("out2.txt", "r")
-# out_file.write (o1 + o2)
-
-
-# a = board (sys.argv[1])
-# print (len (a.parser (sys.argv[1])))
-#a.unswap (sys.argv [2])
