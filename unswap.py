@@ -7,8 +7,8 @@ class box: #one square on a board
         self.id = id #position in board
 
 class board:
-    data = dict ()
-    multiple = [] #stores all the positions that have duplicates
+    # data = dict ()
+    # multiple = [] #stores all the positions that have duplicates
 
     cliques=[[0,1,2,3,4,5,6,7,8],
     [9,10,11,12,13,14,15,16,17],
@@ -43,6 +43,8 @@ class board:
         # bored2 = self.parser (file)[1]
         # self.boxes1 = self.setup (bored1)
         # self.boxes2 = self.setup (bored2)
+        self.data = dict ()
+        self.dups = []
         self.boxes = self.setup (parsed_file)
 
     def setup (self,bored): #takes parsed board and makes and array of boxes holding the id and the data
@@ -69,7 +71,7 @@ class board:
                 n = c[position]
                 if vals.count (n) > 1:
                     duplicates.append (position)
-            self.multiple.append (duplicates)
+            self.dups.append (duplicates)
             return duplicates
         else:
             return -1
@@ -94,10 +96,10 @@ class board:
     def unswap (self, outfile):
         self.check_board () #sets up multiple to find the duplicates
         i = 0
-        while (not self.check_board () and i < len (self.multiple)):
+        while (not self.check_board () and i < len (self.dups)):
             r = i + 1
-            for r in range (len (self.multiple) - 1):
-                a = self.swap (self.multiple[i][0], self.multiple[r][0])
+            for r in range (len (self.dups) - 1):
+                a = self.swap (self.dups[i][0], self.dups[r][0])
                 if self.check_board ():
                     # o = open (outfile, "a")
                     # o.write (a)
@@ -105,9 +107,9 @@ class board:
                     # break
                     return a
                 else:
-                    self.swap (self.multiple[i][0], self.multiple[r][0])
+                    self.swap (self.dups[i][0], self.dups[r][0])
 
-                b = self.swap (self.multiple[i][1], self.multiple[r][0])
+                b = self.swap (self.dups[i][1], self.dups[r][0])
                 if self.check_board ():
                     # o = open (outfile, "a")
                     # o.write (b)
@@ -115,9 +117,9 @@ class board:
                     # break
                     return b
                 else:
-                    self.swap (self.multiple[i][1], self.multiple[r][0])
+                    self.swap (self.dups[i][1], self.dups[r][0])
 
-                c = self.swap (self.multiple[i][1], self.multiple[r][1])
+                c = self.swap (self.dups[i][1], self.dups[r][1])
                 if self.check_board ():
                     # o = open (outfile, "a")
                     # o.write (c)
@@ -125,9 +127,9 @@ class board:
                     # break
                     return c
                 else:
-                    self.swap (self.multiple[i][1], self.multiple[r][1])
+                    self.swap (self.dups[i][1], self.dups[r][1])
 
-                d = self.swap (self.multiple[i][0], self.multiple[r][1])
+                d = self.swap (self.dups[i][0], self.dups[r][1])
                 if self.check_board ():
                     # o = open (outfile, "a")
                     # o.write (d)
@@ -135,7 +137,7 @@ class board:
                     # break
                     return d
                 else:
-                    self.swap (self.multiple[i][0], self.multiple[r][1])
+                    self.swap (self.dups[i][0], self.dups[r][1])
         return ""
 
 
