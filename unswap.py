@@ -7,9 +7,6 @@ class box: #one square on a board
         self.id = id #position in board
 
 class board:
-    # data = dict ()
-    # multiple = [] #stores all the positions that have duplicates
-
     cliques=[[0,1,2,3,4,5,6,7,8],
     [9,10,11,12,13,14,15,16,17],
     [18,19,20,21,22,23,24,25,26],
@@ -39,10 +36,6 @@ class board:
     [60,61,62,69,70,71,78,79,80]]
 
     def __init__ (self, parsed_file):
-        # bored1 = self.parser (file)[0]
-        # bored2 = self.parser (file)[1]
-        # self.boxes1 = self.setup (bored1)
-        # self.boxes2 = self.setup (bored2)
         self.data = dict ()
         self.dups = []
         self.boxes = self.setup (parsed_file)
@@ -151,29 +144,6 @@ def parser (file): #returns an array parsed with all the values in the board
                 pass
         boards.append (board(nums))
     return boards
-
-
-    # ans1 = []
-    # ans2 = []
-    # i = 1
-    # for line in fi:
-    #     f = line.split ("\n")
-    #     for clique in f:
-    #         a = clique.split (",")
-    #         try:
-    #             test = int (a[0])
-    #             if (i <= 9):
-    #                 ans1.append (a)
-    #                 i +=1
-    #             else:
-    #                 ans2.append (a)
-    #         except:
-    #             pass
-    # while [''] in ans1 and ans2:
-    #     ans1.remove ([''])
-    #     ans2.remove ([''])
-    # fi.close ()
-    # return [ans1, ans2]
 
 input = sys.argv [1]
 output = sys.argv [2]
