@@ -47,22 +47,21 @@ class board:
         self.dups = []
         self.boxes = self.setup (parsed_file)
 
-    def setup (self,bored): #takes parsed board and makes and array of boxes holding the id and the data
+    def setup (self, bored): #takes parsed board and makes and array of boxes holding the id and the data
         id = 0
         ans = []
         for r in bored:
-            for c in r:
-                num = int (c)
-                new_box = box (num, id)
-                ans.append (new_box)
-                self.data[id] = num
-                id += 1
+            new_box = box (r, id)
+            ans.append (new_box)
+            self.data[id] = r
+            id += 1
         return ans
 
     def check_clique(self, clique): #takes a row, column, or group and checks if there are doubles
         c = dict ()
         for position in clique: #creates a dictionary of only the positions in the given clique
-            c[position] = self.data[position]
+            num = self.data[position]
+            c[position] = num
         nums = set (c.values())
         if (len (nums) != 9): #there are duplicates
             duplicates = [] #stores the places where there is a duplicate
@@ -137,36 +136,60 @@ class board:
 
 
 def parser (file): #returns an array parsed with all the values in the board
-    fi = open (file, "r")
-    ans1 = []
-    ans2 = []
-    i = 1
-    for line in fi:
-        f = line.split ("\n")
-        for clique in f:
-            a = clique.split (",")
+    boards = []
+    fi = open (file, "r").read ()
+    f = fi.split ("\n\n")
+    for i in range (len (f)):
+        nums = []
+        b = f[i].split("\n")[1:]
+        for clique in b:
+            n = clique.split (",")
             try:
-                test = int (a[0])
-                if (i <= 9):
-                    ans1.append (a)
-                    i +=1
-                else:
-                    ans2.append (a)
-            except:
+                for num in n:
+                    nums.append(int (num))
+            except: #doesnt add the extra ['']
                 pass
-    while [''] in ans1 and ans2:
-        ans1.remove ([''])
-        ans2.remove ([''])
-    fi.close ()
-    return [ans1, ans2]
+        boards.append (board(nums))
+    return boards
 
-input = sys.argv[1]
-output = sys.argv[2]
 
-boards = parser (input)
+    # ans1 = []
+    # ans2 = []
+    # i = 1
+    # for line in fi:
+    #     f = line.split ("\n")
+    #     for clique in f:
+    #         a = clique.split (",")
+    #         try:
+    #             test = int (a[0])
+    #             if (i <= 9):
+    #                 ans1.append (a)
+    #                 i +=1
+    #             else:
+    #                 ans2.append (a)
+    #         except:
+    #             pass
+    # while [''] in ans1 and ans2:
+    #     ans1.remove ([''])
+    #     ans2.remove ([''])
+    # fi.close ()
+    # return [ans1, ans2]
 
-board1 = board (boards[0])
-board2 = board (boards[1])
+input = sys.argv [1]
+output = sys.argv [2]
 
-a = board1.unswap (output)
-b = board2.unswap (output)
+tests = parser (input)
+for i in range (len (tests)):
+    tests[i].unswap (output)
+
+
+# input = sys.argv[1]
+# output = sys.argv[2]
+#
+# boards = parser (input)
+#
+# board1 = board (boards[0])
+# board2 = board (boards[1])
+#
+# a = board1.unswap (output)
+# b = board2.unswap (output)
