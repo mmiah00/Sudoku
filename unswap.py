@@ -5,6 +5,11 @@ class box: #one square on a board
     def __init__ (self, data, id):
         self.data = data
         self.id = id #position in board
+        self.possibles = []
+
+    def set_data (self):
+        if len(self.possibles) == 1:
+            self.data = self.possibles [0]
 
 class board:
     cliques=[[0,1,2,3,4,5,6,7,8],
