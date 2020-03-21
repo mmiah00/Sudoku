@@ -1,3 +1,4 @@
+#! /usr/bin/python
 import sys
 
 class box: #one square on a board
@@ -6,7 +7,6 @@ class box: #one square on a board
         self.id = id #position in board
 
 class board:
-    data = dict ()
     cliques=[[0,1,2,3,4,5,6,7,8],
     [9,10,11,12,13,14,15,16,17],
     [18,19,20,21,22,23,24,25,26],
@@ -35,81 +35,131 @@ class board:
     [57,58,59,66,67,68,75,76,77],
     [60,61,62,69,70,71,78,79,80]]
 
-    def __init__ (self, file):
-        bored = self.parser (file)
-        self.boxes = self.setup (bored)
+    def __init__ (self, parsed_file):
+        self.data = dict ()
+        self.dups = []
+        self.boxes = self.setup (parsed_file)
 
-    def parser (self,file): #returns an array parsed with all the values in the board
-        fi = open (file, "r")
-        ans = []
-        for line in fi:
-            f = line.split ("\n")
-            for clique in f:
-                a = clique.split (",")
-                ans.append (a)
-        while [''] in ans:
-            ans.remove ([''])
-        return ans
-
-    def setup (self,bored): #takes parsed board and makes and array of boxes holding the id and the data
+    def setup (self, bored): #takes parsed board and makes and array of boxes holding the id and the data
         id = 0
         ans = []
         for r in bored:
-            for c in r:
-                num = int (c)
-                new_box = box (num, id)
-                ans.append (new_box)
-                self.data[id] = num
-                id += 1
+            new_box = box (r, id)
+            ans.append (new_box)
+            self.data[id] = r
+            id += 1
         return ans
 
     def check_clique(self, clique): #takes a row, column, or group and checks if there are doubles
         c = dict ()
         for position in clique: #creates a dictionary of only the positions in the given clique
-            c[position] = self.data[position]
+            num = self.data[position]
+            c[position] = num
         nums = set (c.values())
-        if (len (nums) != 9):
-            # duplicates = c.values()
-            # for i in range (9):
-            #     if vals.count (i) <= 1:
-            #         duplicates.remove (i)
-            # return duplicates
+        if (len (nums) != 9): #there are duplicates
             duplicates = [] #stores the places where there is a duplicate
             vals = list (c.values ())
             for position in c.keys():
                 n = c[position]
                 if vals.count (n) > 1:
                     duplicates.append (position)
+            self.dups.append (duplicates)
             return duplicates
         else:
             return -1
-        # c = dict()
-        # for position in clique:
-        #     c[position] = self.data[position]
-        # click = (c.keys()).sort ()
-        # nums = [1,2,3,4,5,6,7,8,9]
-        # for i in range (len (nums)):
-        #     if nums[i] != c[i]:
-        #         return click.getkey (nums[i]) #returns the position where there is a double
-        # return -1 #returns -1 when there are no doubles
 
     def check_board (self):
-        for clique in self.cliques:
-            if self.check_clique (clique) != -1:
-                return False
-        return True
+        ans = True
+        for i in range (len (self.cliques)):
+            if self.check_clique (self.cliques[i]) != -1:
+                ans = False
+        return ans
 
     def swap (self, id1, id2): #takes the id of the spots you want to swap and swaps the values
         one = self.data[id1]
         another = self.data[id2]
         self.data[id1] = another
         self.data[id2] = one
-        if one < another:
-            return ("" + str (one) + "," + str(another) + "\n")
+        if id1 < id2:
+            return ("" + str (id1) + "," + str(id2) + "\n")
         else:
-            return ("" + str(another) + "," + str(one) + "\n")
+            return ("" + str(id2) + "," + str(id1) + "\n")
+
+    def unswap (self, outfile):
+        self.check_board () #sets up multiple to find the duplicates
+        i = 0
+        while (not self.check_board () and i < len (self.dups)):
+            r = i + 1
+            for r in range (len (self.dups) - 1):
+                a = self.swap (self.dups[i][0], self.dups[r][0])
+                if self.check_board ():
+                    o = open (outfile, "a")
+                    o.write (a)
+                    o.close ()
+                    break
+                else:
+                    self.swap (self.dups[i][0], self.dups[r][0])
+
+                b = self.swap (self.dups[i][1], self.dups[r][0])
+                if self.check_board ():
+                    o = open (outfile, "a")
+                    o.write (b)
+                    o.close ()
+                    break
+                else:
+                    self.swap (self.dups[i][1], self.dups[r][0])
+
+                c = self.swap (self.dups[i][1], self.dups[r][1])
+                if self.check_board ():
+                    o = open (outfile, "a")
+                    o.write (c)
+                    o.close ()
+                    break
+                else:
+                    self.swap (self.dups[i][1], self.dups[r][1])
+
+                d = self.swap (self.dups[i][0], self.dups[r][1])
+                if self.check_board ():
+                    o = open (outfile, "a")
+                    o.write (d)
+                    o.close ()
+                    break
+                else:
+                    self.swap (self.dups[i][0], self.dups[r][1])
 
 
+def parser (file): #returns an array parsed with all the values in the board
+    boards = []
+    fi = open (file, "r").read ()
+    f = fi.split ("\n\n")
+    for i in range (len (f)):
+        nums = []
+        b = f[i].split("\n")[1:]
+        for clique in b:
+            n = clique.split (",")
+            try:
+                for num in n:
+                    nums.append(int (num))
+            except: #doesnt add the extra ['']
+                pass
+        boards.append (board(nums))
+    return boards
 
-a = board ("tester.txt")
-print (a.check_clique (a.cliques[12]))
+input = sys.argv [1]
+output = sys.argv [2]
+
+tests = parser (input)
+for i in range (len (tests)):
+    tests[i].unswap (output)
+
+
+# input = sys.argv[1]
+# output = sys.argv[2]
+#
+# boards = parser (input)
+#
+# board1 = board (boards[0])
+# board2 = board (boards[1])
+#
+# a = board1.unswap (output)
+# b = board2.unswap (output)
