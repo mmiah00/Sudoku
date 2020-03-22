@@ -41,6 +41,14 @@ class board:
         self.dups = []
         self.boxes = self.setup (parsed_file)
 
+    def printboard (self):
+        ans = ""
+        for key in self.data.keys ():
+            ans += str (self.data[key]) + " "
+            if (key + 1) % 9 == 0:
+                ans += "\n"
+        print (ans)
+
     def setup (self, bored): #takes parsed board and makes and array of boxes holding the id and the data
         id = 0
         ans = []
@@ -59,16 +67,23 @@ class board:
         return ans
 
     def find_possibles (self, cell): #takes the cell and finds all the numbers that it can be
-        clicks = possibleshelper (cell.id)
+        clicks = self.possibleshelper (cell.id)
         all_nums = [1,2,3,4,5,6,7,8,9]
-        if cell.data == '_':
-            for list in clicks:
-                for id in list:
-                    num = self.data[id]
-                    if num != '_':
-                        if num in all_nums:
-                            all_nums.remove (num)
+        for list in clicks:
+            for id in list:
+                num = self.data[id]
+                if num != '_':
+                    if num in all_nums:
+                        all_nums.remove (num)
+        # if cell.data == '_':
+        #     for list in clicks:
+        #         for id in list:
+        #             num = self.data[id]
+        #             if num != '_':
+        #                 if num in all_nums:
+        #                     all_nums.remove (num)
         cell.possibles = all_nums
+        print (cell.possibles)
 
 
     def check_clique(self, clique): #takes a row, column, or group and checks if there are doubles
@@ -156,13 +171,19 @@ def parser (file): #returns an array parsed with all the values in the board
     for i in range (len (f)):
         nums = []
         b = f[i].split("\n")[1:]
-        for clique in b:
-            n = clique.split (",")
-            try:
-                for num in n:
-                    nums.append(int (num))
-            except: #doesnt add the extra ['']
-                pass
+        for row in b:
+            elements = row.split (",")
+            if (elements != ['']):
+                for n in elements:
+                    nums.append (n)
+        # for clique in b:
+        #     n = clique.split (",")
+        #     try:
+        #         for num in n:
+        #             nums.append(int (num))
+        #     except: #doesnt add the extra ['']
+        #         for num in n:
+        #             nums.append(num)
         boards.append (board(nums))
     return boards
 
@@ -170,8 +191,14 @@ input = sys.argv [1]
 output = sys.argv [2]
 
 tests = parser (input)
+
 for i in range (len (tests)):
-    tests[i].unswap (output)
+    #tests[i].unswap (output)
+    bored = tests[i]
+    bored.printboard ()
+    print ("\n")
+    #bored.find_possibles (bored.boxes[0])
+    #print (bored.boxes)
 
 
 # input = sys.argv[1]
