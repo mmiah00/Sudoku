@@ -65,6 +65,8 @@ class board:
     [57,58,59,66,67,68,75,76,77],
     [60,61,62,69,70,71,78,79,80]]
 
+    steps = 0
+
     def __init__ (self, parsed_file):
         self.data = dict ()
         self.dups = []
@@ -163,22 +165,43 @@ class board:
     #         c = copy.deepcopy (bored)
     #         p = current_cell.possibles
     #         for num in p:
+    def isSolved(self):
+        for x in self.cliques:
+            nums = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+            for y in x:
+                if self.all_boxes[y].data in nums:
+                    nums.remove(self.all_boxes[y].data)
+            if (len(nums) > 0):
+                return False
+        return True
 
-    def solver (self, cell_index, trials):
-        if (cell_index < len (self.open_boxes)):
-            pos = self.open_boxes[cell_index].possibles
-            for num in pos:
-                if cell_index < len (self.open_boxes):
-                    self.open_boxes[cell_index].data = num
-                    self.open_boxes[cell_index].status = "filled"
-                    if (self.solver (cell_index + 1, trials + 1)):
-                        print ("Trials: ", trials + 1)
-                        return True
+    def solver (self, nodeindex):
+        if (self.isSolved()):
+            return True
+        else:
+            # nums = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+            # if nodeindex < len(self.blanknodes):
+            #     relevantcliques = []
+            #     for clique in self.cliques:
+            #         if self.blanknodes[nodeindex].id in clique:
+            #             relevantcliques.append(clique)
+            #
+            #     for clique in relevantcliques:
+            #         for x in clique:
+            #             if self.allnodes[x].data in nums:
+            #                 nums.remove(self.allnodes[x].data)
+            if nodeindex < len(self.open_boxes):
+                pos = self.open_boxes [nodeindex].possibles
+                for num in pos:
+                    if nodeindex < len(self.open_boxes):
+                        self.open_boxes[nodeindex].data = num
+                        self.steps = self.steps + 1
+                        if (self.solver(nodeindex + 1)):
+                            return True
+                        else:
+                            self.open_boxes[nodeindex].data = '_'
                     else:
-                        self.open_boxes[cell_index].data = '_'
-                        self.open_boxes[cell_index].status = "open"
-                else:
-                    return False
+                        return False
 
     def swap (self, id1, id2): #takes the id of the spots you want to swap and swaps the values
         one = self.data[id1]
@@ -252,7 +275,11 @@ input = sys.argv [1]
 output = sys.argv [2]
 
 tests = parser (input)
+tests[0].solver (0)
 for i in range (len (tests)):
     #tests[i].unswap (output)
-    tests[i].solver (0,0)
-    tests[i].printBoard ()
+    # for x in range (len (tests[i].open_boxes)):
+    #     print (x, " : ", tests[i].open_boxes[x].id)
+    print ("\n\n")
+    #tests[i].solver (0)
+    # tests[i].printBoard ()
