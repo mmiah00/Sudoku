@@ -5,7 +5,13 @@ class box: #one square on a board
     def __init__ (self, data, id):
         self.data = data
         self.id = id #position in board
-        self.possibles = []
+        self.status = ""
+
+    def set_status (self):
+        if self.data == '_':
+            self.status = "open"
+        else:
+            self.status = "filled"
 
 class board:
     cliques=[[0,1,2,3,4,5,6,7,8],
@@ -39,7 +45,13 @@ class board:
     def __init__ (self, parsed_file):
         self.data = dict ()
         self.dups = []
-        self.boxes = self.setup (parsed_file)
+        self.all_boxes = self.setup (parsed_file)
+        self.open_boxes = []
+        for cell in self.all_boxes:
+            cell.set_status ()
+            if cell.status == "open":
+                self.open_boxes.append (cell)
+                self.find_possibles (cell)
 
     def printboard (self):
         ans = ""
@@ -59,7 +71,7 @@ class board:
             id += 1
         return ans
 
-    def possibleshelper (self, id): #takes the id and finds each clique that has that id
+    def possibleshelper (self, id): #takes the id and finds each clique that has that id in it
         ans = []
         for list in self.cliques:
             if id in list:
@@ -67,19 +79,15 @@ class board:
         return ans
 
     def find_possibles (self, cell): #takes the cell and finds all the numbers that it can be
-        if cell.data == '_':
-            clicks = self.possibleshelper (cell.id)
-            all_nums = ['1','2','3','4','5','6','7','8','9']
-            for list in clicks:
-                for id in list:
-                    num = self.data[id]
-                    if num != '_':
-                        if num in all_nums:
-                            all_nums.remove (num)
-            cell.possibles = all_nums
-        else:
-            cell.possibles = cell.data
-        print (cell.possibles)
+        clicks = self.possibleshelper (cell.id)
+        all_nums = ['1','2','3','4','5','6','7','8','9']
+        for list in clicks:
+            for id in list:
+                num = self.data[id]
+                if num != '_':
+                    if num in all_nums:
+                        all_nums.remove (num)
+        cell.possibles = all_nums
 
     def check_clique(self, clique): #takes a row, column, or group and checks if there are doubles
         c = dict ()
@@ -188,4 +196,7 @@ output = sys.argv [2]
 tests = parser (input)
 for i in range (len (tests)):
     #tests[i].unswap (output)
-    tests[i].find_possibles (tests[i].boxes[0])
+    try:
+        print (tests[i].all_boxes[0].possibles)
+    except:
+        pass
