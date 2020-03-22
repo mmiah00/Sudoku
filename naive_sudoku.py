@@ -165,7 +165,52 @@ class board:
     #         c = copy.deepcopy (bored)
     #         p = current_cell.possibles
     #         for num in p:
-    def isSolved(self):
+
+    def solverhelp(self, nodeindex):
+        if (self.check_board()):
+            return True
+        else:
+            nums = self.open_boxes[nodeindex].possibles
+            for x in nums:
+                if nodeindex < len(self.open_boxes):
+                    self.open_boxes[nodeindex].data = x
+                    self.steps = self.steps + 1
+                    if (self.solverhelp(nodeindex + 1)):
+                        return True
+                    else:
+                        self.open_boxes[nodeindex].data = '_'
+                else:
+                    return False
+
+    def findSolutions(self, nodeindex):
+        if (self.isSolved(self.all_boxes)):
+            return True
+        else:
+            nums = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+            if nodeindex < len(self.open_boxes):
+                relevantcliques = []
+                for clique in self.cliques:
+                    if self.open_boxes[nodeindex].id in clique:
+                        relevantcliques.append(clique)
+
+                for clique in relevantcliques:
+                    for x in clique:
+                        if self.all_boxes[x].data in nums:
+                            nums.remove(self.all_boxes[x].data)
+
+            for x in nums:
+                if nodeindex < len(self.open_boxes):
+                    self.open_boxes[nodeindex].data = x
+                    self.steps = self.steps + 1
+                    if (self.findSolutions(nodeindex + 1)):
+                        return True
+                    else:
+                        self.open_boxes[nodeindex].data = '_'
+                else:
+                    return False
+
+
+    def isSolved(self, in_nodes):
         for x in self.cliques:
             nums = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
             for y in x:
@@ -175,33 +220,8 @@ class board:
                 return False
         return True
 
-    def solver (self, nodeindex):
-        if (self.isSolved()):
-            return True
-        else:
-            # nums = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
-            # if nodeindex < len(self.blanknodes):
-            #     relevantcliques = []
-            #     for clique in self.cliques:
-            #         if self.blanknodes[nodeindex].id in clique:
-            #             relevantcliques.append(clique)
-            #
-            #     for clique in relevantcliques:
-            #         for x in clique:
-            #             if self.allnodes[x].data in nums:
-            #                 nums.remove(self.allnodes[x].data)
-            if nodeindex < len(self.open_boxes):
-                pos = self.open_boxes [nodeindex].possibles
-                for num in pos:
-                    if nodeindex < len(self.open_boxes):
-                        self.open_boxes[nodeindex].data = num
-                        self.steps = self.steps + 1
-                        if (self.solver(nodeindex + 1)):
-                            return True
-                        else:
-                            self.open_boxes[nodeindex].data = '_'
-                    else:
-                        return False
+    def solve(self):
+        self.findSolutions(0)
 
     def swap (self, id1, id2): #takes the id of the spots you want to swap and swaps the values
         one = self.data[id1]
@@ -275,11 +295,13 @@ input = sys.argv [1]
 output = sys.argv [2]
 
 tests = parser (input)
-tests[0].solver (0)
+
 for i in range (len (tests)):
     #tests[i].unswap (output)
     # for x in range (len (tests[i].open_boxes)):
     #     print (x, " : ", tests[i].open_boxes[x].id)
+    tests[i].solve ()
+    print (tests[i].steps)
     print ("\n\n")
     #tests[i].solver (0)
     # tests[i].printBoard ()
