@@ -5,6 +5,7 @@ class box: #one square on a board
     def __init__ (self, data, id):
         self.data = data
         self.id = id #position in board
+        self.possibles = []
 
 class board:
     cliques=[[0,1,2,3,4,5,6,7,8],
@@ -49,6 +50,26 @@ class board:
             self.data[id] = r
             id += 1
         return ans
+
+    def possibleshelper (self, id): #takes the id and finds each clique that has that id
+        ans = []
+        for list in self.cliques:
+            if id in list:
+                ans.append (list)
+        return ans
+
+    def find_possibles (self, cell): #takes the cell and finds all the numbers that it can be
+        clicks = possibleshelper (cell.id)
+        all_nums = [1,2,3,4,5,6,7,8,9]
+        if cell.data == '_':
+            for list in clicks:
+                for id in list:
+                    num = self.data[id]
+                    if num != '_':
+                        if num in all_nums:
+                            all_nums.remove (num)
+        cell.possibles = all_nums
+
 
     def check_clique(self, clique): #takes a row, column, or group and checks if there are doubles
         c = dict ()
