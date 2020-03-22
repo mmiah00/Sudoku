@@ -179,14 +179,6 @@ def parser (file): #returns an array parsed with all the values in the board
             if (elements != ['']):
                 for n in elements:
                     nums.append (n)
-        # for clique in b:
-        #     n = clique.split (",")
-        #     try:
-        #         for num in n:
-        #             nums.append(int (num))
-        #     except: #doesnt add the extra ['']
-        #         for num in n:
-        #             nums.append(num)
         boards.append (board(nums))
     return boards
 
@@ -197,6 +189,6 @@ tests = parser (input)
 for i in range (len (tests)):
     #tests[i].unswap (output)
     try:
-        print (tests[i].all_boxes[0].possibles)
+        print (tests[i].check_board ())
     except:
         pass
