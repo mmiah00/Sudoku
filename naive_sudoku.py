@@ -67,24 +67,19 @@ class board:
         return ans
 
     def find_possibles (self, cell): #takes the cell and finds all the numbers that it can be
-        clicks = self.possibleshelper (cell.id)
-        all_nums = [1,2,3,4,5,6,7,8,9]
-        for list in clicks:
-            for id in list:
-                num = self.data[id]
-                if num != '_':
-                    if num in all_nums:
-                        all_nums.remove (num)
-        # if cell.data == '_':
-        #     for list in clicks:
-        #         for id in list:
-        #             num = self.data[id]
-        #             if num != '_':
-        #                 if num in all_nums:
-        #                     all_nums.remove (num)
-        cell.possibles = all_nums
+        if cell.data == '_':
+            clicks = self.possibleshelper (cell.id)
+            all_nums = ['1','2','3','4','5','6','7','8','9']
+            for list in clicks:
+                for id in list:
+                    num = self.data[id]
+                    if num != '_':
+                        if num in all_nums:
+                            all_nums.remove (num)
+            cell.possibles = all_nums
+        else:
+            cell.possibles = cell.data
         print (cell.possibles)
-
 
     def check_clique(self, clique): #takes a row, column, or group and checks if there are doubles
         c = dict ()
@@ -191,23 +186,6 @@ input = sys.argv [1]
 output = sys.argv [2]
 
 tests = parser (input)
-
 for i in range (len (tests)):
     #tests[i].unswap (output)
-    bored = tests[i]
-    bored.printboard ()
-    print ("\n")
-    #bored.find_possibles (bored.boxes[0])
-    #print (bored.boxes)
-
-
-# input = sys.argv[1]
-# output = sys.argv[2]
-#
-# boards = parser (input)
-#
-# board1 = board (boards[0])
-# board2 = board (boards[1])
-#
-# a = board1.unswap (output)
-# b = board2.unswap (output)
+    tests[i].find_possibles (tests[i].boxes[0])
