@@ -1,5 +1,28 @@
 #! /usr/bin/python
+import time
 import sys
+import copy
+
+class MyStack:
+  def __init__(self,in_list = None):
+    self.storage = []
+    self.filled = 0    # will keep track of how many slots in self.storage are actually filled
+    if in_list != None:   # there are more efficient ways to initialize than this, but...
+        for val in in_list:
+          self.push(val)
+
+  def push(self,val):
+    if self.filled == len(self.storage):
+      self.storage.append(val)
+    else:
+      self.storage[self.filled] = val
+    self.filled += 1
+
+  def pop(self):
+    if self.filled == 0:
+      return None
+    self.filled -= 1
+    return self.storage[self.filled]
 
 class box: #one square on a board
     def __init__ (self, data, id):
@@ -114,6 +137,49 @@ class board:
                 ans = False
         return ans
 
+    # def solve (self, bored):
+    #     stack = MyStack ()
+    #     backtracks, trials = 0, 0
+    #     i = 0 #keeping track of each open cell
+    #     while (not self.check_board()):
+    #         trials += 1
+    #         temp_board = copy.deepcopy (self)
+    #         MyStack.push (temp_board)
+    #         cell = temp_board.open_boxes[i]
+    #         for num in cell.possibles: #trying each possiblity
+    #             ide = cell.id
+    #             temp_board.data[ide] = num #setting the value to that on the tempboard
+    #             if self.solve(temp_board):
+    #
+    #     print ("Solved!")
+    #     return True
+
+    # def solve (self, bored, current_cell, next_cell, trials, backtracks):
+    #     if bored.check_board ():
+    #         self = bored #works?
+    #         print ("Solved! with " + trials + "trials and " + backtracks + "backtracks")
+    #         return True
+    #     else:
+    #         c = copy.deepcopy (bored)
+    #         p = current_cell.possibles
+    #         for num in p:
+
+    def solver (self, cell_index, trials):
+        if (cell_index < len (self.open_boxes)):
+            pos = self.open_boxes[cell_index].possibles
+            for num in pos:
+                if cell_index < len (self.open_boxes):
+                    self.open_boxes[cell_index].data = num
+                    self.open_boxes[cell_index].status = "filled"
+                    if (self.solver (cell_index + 1, trials + 1)):
+                        print ("Trials: ", trials + 1)
+                        return True
+                    else:
+                        self.open_boxes[cell_index].data = '_'
+                        self.open_boxes[cell_index].status = "open"
+                else:
+                    return False
+
     def swap (self, id1, id2): #takes the id of the spots you want to swap and swaps the values
         one = self.data[id1]
         another = self.data[id2]
@@ -188,7 +254,5 @@ output = sys.argv [2]
 tests = parser (input)
 for i in range (len (tests)):
     #tests[i].unswap (output)
-    try:
-        print (tests[i].check_board ())
-    except:
-        pass
+    tests[i].solver (0,0)
+    tests[i].printBoard ()
