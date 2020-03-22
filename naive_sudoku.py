@@ -183,7 +183,7 @@ class board:
                     return False
 
     def findSolutions(self, nodeindex):
-        if (self.isSolved(self.all_boxes)):
+        if (self.done()):
             return True
         else:
             nums = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
@@ -210,13 +210,13 @@ class board:
                     return False
 
 
-    def isSolved(self, in_nodes):
-        for x in self.cliques:
+    def done(self):
+        for clique in self.cliques:
             nums = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
-            for y in x:
-                if self.all_boxes[y].data in nums:
-                    nums.remove(self.all_boxes[y].data)
-            if (len(nums) > 0):
+            for pos in clique:
+                if self.all_boxes[pos].data in nums:
+                    nums.remove (self.all_boxes[pos].data)
+            if (len (nums) > 0):
                 return False
         return True
 
