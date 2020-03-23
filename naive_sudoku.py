@@ -255,24 +255,14 @@ def parser (file): #returns an array parsed with all the values in the board
 
 input = sys.argv [1]
 output = sys.argv [2]
+board_name = sys.argv[3]
 
 tests = parser (input)
-# x = 1
-# for box in tests[0].open_boxes:
-#     print ("Num: ", x, "Possibles: ", box.possibles, "Type: ", box.possibles)
-#     x += 1
 
 for i in range (len (tests)):
-    #tests[i].unswap (output)
-    # for x in range (len (tests[i].open_boxes)):
-    #     print (x, " : ", tests[i].open_boxes[x].id)
-
-    tests[i].solve ()
+    o = open (output, "w")
+    o.write (board_name + "\n")
+    tests[i].solve (output)
     print ("Trials: ", tests[i].trials, " Backtracks: ", tests[i].backtracks)
 
-    # for x in range (len (tests[i].open_boxes)):
-    #     print ("Index : ", x , "ID: " , tests[i].open_boxes[x].id)
-
     print ("\n\n")
-    #tests[i].solver (0)
-    # tests[i].printBoard ()
