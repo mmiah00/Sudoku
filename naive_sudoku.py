@@ -1,4 +1,3 @@
-
 #! /usr/bin/python
 import time
 import sys
@@ -69,7 +68,8 @@ class board:
     trials = 0
     backtracks = 0
 
-    def __init__ (self, parsed_file):
+    def __init__ (self, parsed_file, name = ""):
+        self.name = name
         self.data = dict ()
         self.dups = []
         self.all_boxes = self.setup (parsed_file)
@@ -83,9 +83,11 @@ class board:
     def board_string (self):
         ans = ""
         for key in self.data.keys ():
-            ans += str (self.data[key]) + " "
+            ans += str (self.data[key])
             if (key + 1) % 9 == 0:
                 ans += "\n"
+            else:
+                ans += ","
         return ans + "\n"
 
     def setup (self, bored): #takes parsed board and makes and array of boxes holding the id and the data
@@ -237,20 +239,22 @@ class board:
                 else:
                     self.swap (self.dups[i][0], self.dups[r][1])
 
-
+names = []
 def parser (file): #returns an array parsed with all the values in the board
     boards = []
     fi = open (file, "r").read ()
     f = fi.split ("\n\n")
     for i in range (len (f)):
         nums = []
-        b = f[i].split("\n")[1:]
+        s = f[i].split ("\n")
+        name = s[0]
+        b = s[1:]
         for row in b:
             elements = row.split (",")
             if (elements != ['']):
                 for n in elements:
                     nums.append (n)
-        boards.append (board(nums))
+        boards.append (board(nums, name))
     return boards
 
 input = sys.argv [1]
@@ -260,9 +264,11 @@ board_name = sys.argv[3]
 tests = parser (input)
 
 for i in range (len (tests)):
-    o = open (output, "w")
-    o.write (board_name + "\n")
-    tests[i].solve (output)
-    print ("Trials: ", tests[i].trials, " Backtracks: ", tests[i].backtracks)
+    title = tests[i].name.split (",")[0]
+    if title == board_name:
+        o = open (output, "w")
+        o.write (tests[i].name + "\n") #he didn't want this but i just kept it in there 
+        tests[i].solve (output)
+        print ("Trials: ", tests[i].trials, " Backtracks: ", tests[i].backtracks)
 
     print ("\n\n")
