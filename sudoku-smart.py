@@ -158,9 +158,14 @@ class board:
             else:
                 d[len (a)] = [box]
         lens = sorted (d.keys ())
-        ans = dict ()
+        # ans = dict ()
+        # for length in lens:
+        #     ans[length] = d[length]
+        ans = []
         for length in lens:
-            ans[length] = d[length]
+            for box in length:
+                ans.append (box)
+        self.open_boxes = ans #puts the boxes in order from least amt of possibilities to most 
         return ans
 
     def solverhelp (self, nodeindex):
