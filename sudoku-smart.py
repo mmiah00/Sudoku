@@ -149,8 +149,7 @@ class board:
                 ans = False
         return ans
 
-    def setup_openboxes (self): #makes a dictionary whose keys are lengths and the vals are each box w the possibilities that are that len, returns then in order of smallest to largest
-        d = dict ()
+    def order_openboxes (self): #puts the boxes in order from least amt of possibilities to most
         for box in self.open_boxes:
             a = box.possibles
             if len(a) in d.keys ():
@@ -163,9 +162,9 @@ class board:
         #     ans[length] = d[length]
         ans = []
         for length in lens:
-            for box in length:
+            for box in d[length]:
                 ans.append (box)
-        self.open_boxes = ans #puts the boxes in order from least amt of possibilities to most 
+        self.open_boxes = ans
         return ans
 
     def solverhelp (self, nodeindex):
@@ -208,6 +207,7 @@ class board:
 
     def solve(self, outfile):
         o = open (outfile, "w")
+        self.order_openboxes ()
         self.solverhelp(0)
         o.write (self.board_string ())
         o.close ()
@@ -287,19 +287,21 @@ output = sys.argv [2]
 board_name = sys.argv[3]
 
 tests = parser (input)
-# mytest = tests[2]
-# opens = mytest.setup_openboxes ()
+mytest = tests[2]
+opens = mytest.order_openboxes ()
 # for key in opens.keys ():
 #     print ("LENGTH: ", key, "\n\t")
 #     for box in opens[key]:
 #         print (box.id, " : ", box.possibles)
+for box in opens:
+    print (box.id, " : ", box.possibles)
 
-for i in range (len (tests)):
-    title = tests[i].name.split (",")[0]
-    if title == board_name:
-        o = open (output, "w")
-        o.write (tests[i].name + "\n") #he didn't want this but i just kept it in there
-        tests[i].solve (output)
-        print ("Trials: ", tests[i].trials, " Backtracks: ", tests[i].backtracks)
-
-    print ("\n\n")
+# for i in range (len (tests)):
+#     title = tests[i].name.split (",")[0]
+#     if title == board_name:
+#         o = open (output, "w")
+#         o.write (tests[i].name + "\n") #he didn't want this but i just kept it in there
+#         tests[i].solve (output)
+#         print ("Trials: ", tests[i].trials, " Backtracks: ", tests[i].backtracks)
+#
+#     print ("\n\n")
