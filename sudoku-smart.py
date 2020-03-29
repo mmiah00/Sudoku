@@ -85,7 +85,6 @@ class board:
                 else:
                     self.open_boxes.append (cell)
 
-
     def board_string (self):
         ans = ""
         for key in self.data.keys ():
@@ -150,6 +149,7 @@ class board:
         return ans
 
     def order_openboxes (self): #puts the boxes in order from least amt of possibilities to most
+        d = dict ()
         for box in self.open_boxes:
             a = box.possibles
             if len(a) in d.keys ():
@@ -157,9 +157,6 @@ class board:
             else:
                 d[len (a)] = [box]
         lens = sorted (d.keys ())
-        # ans = dict ()
-        # for length in lens:
-        #     ans[length] = d[length]
         ans = []
         for length in lens:
             for box in d[length]:
@@ -167,10 +164,40 @@ class board:
         self.open_boxes = ans
         return ans
 
+    def unique_posibilities (self, clique): #given a clique, checks each blank to see if it has a unique possibility and will set it to that number
+        d1 = dict () #possibility : count
+        d2 = dict () #possibility : list of boxes w that possibility
+        for id in clique:
+            box = self.all_boxes[id]
+            self.find_possibles (box)
+            if box in self.open_boxes:
+                for p in box.possibles:
+                    if p in d1.keys ():
+                        d1[p] += 1
+                    else:
+                        d1[p] = 1
+                    if p in d2.keys ():
+                        d2[p].append (box)
+                    else:
+                        d2[p] = [box]
+        for possibility in d1.keys ():
+            if d1[possibility] == 1:
+                box = d2[possibility][0]
+                box.data = possibility
+                self.data[box.id] = possibility
+                self.open_boxes.remove (box)
+                #print (box.id, " : ", possibility)
+
+    def set_uniques (self):
+        for clique in self.cliques:
+            self.unique_posibilities (clique)
+
+
     def solverhelp (self, nodeindex):
         if (self.done()):
             return True
         else:
+            possibles = []
             if nodeindex < len(self.open_boxes):
                 current_cell = self.open_boxes[nodeindex]
                 possibles = self.find_possibles (current_cell)
@@ -179,6 +206,7 @@ class board:
                     for id in clique:
                         if self.all_boxes[id].data in possibles: #goes through each clique to see what numbers are/aren't possible
                             possibles.remove(self.all_boxes[id].data) #removes what's already theres
+                # print (possibles)
             #print ("Nums: ", nums, "Possibles List: ", self.find_possibles (self.open_boxes[nodeindex]))
 
             for guess in possibles:
@@ -207,62 +235,10 @@ class board:
 
     def solve(self, outfile):
         o = open (outfile, "w")
-        self.order_openboxes ()
+        self.set_uniques()
         self.solverhelp(0)
         o.write (self.board_string ())
         o.close ()
-
-    def swap (self, id1, id2): #takes the id of the spots you want to swap and swaps the values
-        one = self.data[id1]
-        another = self.data[id2]
-        self.data[id1] = another
-        self.data[id2] = one
-        if id1 < id2:
-            return ("" + str (id1) + "," + str(id2) + "\n")
-        else:
-            return ("" + str(id2) + "," + str(id1) + "\n")
-
-    def unswap (self, outfile):
-        self.check_board () #sets up multiple to find the duplicates
-        i = 0
-        while (not self.check_board () and i < len (self.dups)):
-            r = i + 1
-            for r in range (len (self.dups) - 1):
-                a = self.swap (self.dups[i][0], self.dups[r][0])
-                if self.check_board ():
-                    o = open (outfile, "a")
-                    o.write (a)
-                    o.close ()
-                    break
-                else:
-                    self.swap (self.dups[i][0], self.dups[r][0])
-
-                b = self.swap (self.dups[i][1], self.dups[r][0])
-                if self.check_board ():
-                    o = open (outfile, "a")
-                    o.write (b)
-                    o.close ()
-                    break
-                else:
-                    self.swap (self.dups[i][1], self.dups[r][0])
-
-                c = self.swap (self.dups[i][1], self.dups[r][1])
-                if self.check_board ():
-                    o = open (outfile, "a")
-                    o.write (c)
-                    o.close ()
-                    break
-                else:
-                    self.swap (self.dups[i][1], self.dups[r][1])
-
-                d = self.swap (self.dups[i][0], self.dups[r][1])
-                if self.check_board ():
-                    o = open (outfile, "a")
-                    o.write (d)
-                    o.close ()
-                    break
-                else:
-                    self.swap (self.dups[i][0], self.dups[r][1])
 
 names = []
 def parser (file): #returns an array parsed with all the values in the board
@@ -287,21 +263,23 @@ output = sys.argv [2]
 board_name = sys.argv[3]
 
 tests = parser (input)
-mytest = tests[2]
-opens = mytest.order_openboxes ()
+# mytest = tests[2]
+# opens = mytest.open_boxes
+# mytest.set_uniques ()
+
 # for key in opens.keys ():
 #     print ("LENGTH: ", key, "\n\t")
 #     for box in opens[key]:
 #         print (box.id, " : ", box.possibles)
-for box in opens:
-    print (box.id, " : ", box.possibles)
 
-# for i in range (len (tests)):
-#     title = tests[i].name.split (",")[0]
-#     if title == board_name:
-#         o = open (output, "w")
-#         o.write (tests[i].name + "\n") #he didn't want this but i just kept it in there
-#         tests[i].solve (output)
-#         print ("Trials: ", tests[i].trials, " Backtracks: ", tests[i].backtracks)
-#
-#     print ("\n\n")
+# for box in opens:
+#     print (box.id, " : ", box.possibles)
+
+for i in range (len (tests)):
+    title = tests[i].name.split (",")[0]
+    if title == board_name:
+        o = open (output, "w")
+        o.write (tests[i].name + "\n") #he didn't want this but i just kept it in there
+        tests[i].solve (output)
+        print ("Trials: ", tests[i].trials, " Backtracks: ", tests[i].backtracks)
+    print ("\n\n")
