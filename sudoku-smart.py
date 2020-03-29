@@ -164,25 +164,20 @@ class board:
         self.open_boxes = ans
         return ans
 
-    def unique_posibilities (self, clique): #given a clique, checks each blank to see if it has a unique possibility and will set it to that number
-        d1 = dict () #possibility : count
-        d2 = dict () #possibility : list of boxes w that possibility
+    def unique_posibilities (self, clique): #given a clique, checks each blank to see if it has a unique possibility
+        d = dict () #possibility : list of boxes w that possibility
         for id in clique:
             box = self.all_boxes[id]
             self.find_possibles (box)
             if box in self.open_boxes:
                 for p in box.possibles:
-                    if p in d1.keys ():
-                        d1[p] += 1
+                    if p in d.keys ():
+                        d[p].append (box)
                     else:
-                        d1[p] = 1
-                    if p in d2.keys ():
-                        d2[p].append (box)
-                    else:
-                        d2[p] = [box]
-        for possibility in d1.keys ():
-            if d1[possibility] == 1:
-                box = d2[possibility][0]
+                        d[p] = [box]
+        for possibility in d.keys ():
+            if len (d[possibility])== 1:
+                box = d[possibility][0]
                 box.data = possibility
                 self.data[box.id] = possibility
                 self.open_boxes.remove (box)
@@ -251,6 +246,9 @@ def parser (file): #returns an array parsed with all the values in the board
     for i in range (len (f)):
         nums = []
         s = f[i].split ("\n")
+        if "https://www.telegraph.co.uk/news/science/science-news/9359579/Worlds-hardest-sudoku-can-you-crack-it.html" in s:
+            s.remove ('')
+            s.remove ("https://www.telegraph.co.uk/news/science/science-news/9359579/Worlds-hardest-sudoku-can-you-crack-it.html")
         name = s[0]
         b = s[1:]
         for row in b:
@@ -259,6 +257,7 @@ def parser (file): #returns an array parsed with all the values in the board
                 for n in elements:
                     nums.append (n)
         boards.append (board(nums, name))
+    print ("\n\n")
     return boards
 
 input = sys.argv [1]
@@ -266,7 +265,7 @@ output = sys.argv [2]
 board_name = sys.argv[3]
 
 tests = parser (input)
-mytest = tests[2]
+#mytest = tests[2]
 # opens = mytest.open_boxes
 # mytest.set_uniques ()
 
