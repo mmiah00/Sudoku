@@ -278,7 +278,6 @@ for i in range (len (tests)):
     title = tests[i].name.split (",")[0]
     if title == board_name:
         o = open (output, "w")
-        o.write (tests[i].name + "\n") #he didn't want this but i just kept it in there
         tests[i].solve ()
         print ("Trials: ", tests[i].trials, " Backtracks: ", tests[i].backtracks)
         print (tests[i].board_string ())
