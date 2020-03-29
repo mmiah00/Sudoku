@@ -235,8 +235,11 @@ class board:
 
     def solve(self, outfile):
         o = open (outfile, "w")
+        start = time.time ()
         self.set_uniques()
         self.solverhelp(0)
+        elapsed_time = time.time() - start
+        print ("Time: ", elapsed_time)
         o.write (self.board_string ())
         o.close ()
 
@@ -263,7 +266,7 @@ output = sys.argv [2]
 board_name = sys.argv[3]
 
 tests = parser (input)
-# mytest = tests[2]
+mytest = tests[2]
 # opens = mytest.open_boxes
 # mytest.set_uniques ()
 
@@ -282,4 +285,3 @@ for i in range (len (tests)):
         o.write (tests[i].name + "\n") #he didn't want this but i just kept it in there
         tests[i].solve (output)
         print ("Trials: ", tests[i].trials, " Backtracks: ", tests[i].backtracks)
-    print ("\n\n")
